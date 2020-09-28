@@ -14,6 +14,38 @@ const config = {
     measurementId: "G-GNM6ESNGF6"
   };
 
+  //creating a user information profile having userAuth object(when user authenticate)
+  export const createUserProfileDocument = async (userAuth, additionalData) => {
+    if(!userAuth) return;   //if userAuth object is null, return nothing
+
+    //getting userRef from the firstore with uid generated during authentication
+    const userRef = firestore.doc(`users/${userAuth.uid}`);
+
+    //wait to get the userRef object and then have the snapshot of user
+    const snapShot = await userRef.get();
+
+    //if no user found, create the new column with user information and date of creation
+    if(!snapShot.exists){
+      const {displayName, email} = userAuth;
+      const createdAt = new Date();
+
+      try{
+        // setting the data in firestore. passing additionalData with additionalData(as we dont need it)
+        await userRef.set({
+          displayName,
+          email,
+          createdAt,
+          ...additionalData
+        })
+      } catch(error) {
+          console.log('error creating user', error.message)
+      }
+    }
+
+    //return the userRef object to do things with user
+    return userRef;
+  }
+  
   firebase.initializeApp(config);
 
   //using firebase auth method to use anywhere in the program.
