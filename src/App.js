@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 
-import {Route, Switch} from 'react-router-dom';
+import {Route, Switch, Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {setCurrentUser} from './redux/user/user.actions';
 
@@ -50,12 +50,16 @@ class App extends React.Component {
         <Switch>    
         <Route exact path='/' component={HomePage} />
         <Route path='/shop' component={ShopPage}/>
-        <Route path='/signup' component={SignInAndSignUpPage} />
+        <Route path='/signup' render = {() => this.props.currentUser ? (<Redirect to='/' />) : (<SignInAndSignUpPage />)} />
         </Switch>
       </div>
     );
   }
 }
+
+const mapStateToProps = ({ user }) => ({
+  currentUser: user.currentUser
+});
 
 //passing the action to the store. dispatching an action with and return the updated result from store based on the action
 const mapDispatchToProps = dispatch => ({
@@ -63,4 +67,4 @@ const mapDispatchToProps = dispatch => ({
 });
 
 //connect funtion connect a react component to Redux store. provide the component the data it need or the function to dispatch to the store
-export default connect(null, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
