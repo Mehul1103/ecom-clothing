@@ -12,9 +12,9 @@ export const addItemToCart = (cartItems, cartItemToAdd) => {
         return cartItems.map(cartItem => 
         cartItem.id === cartItemToAdd.id
         ? {...cartItem, quantity : cartItem.quantity + 1}
-        : {cartItem}
-        )
+        : cartItem
+        );
     }
     //otherwise return the same array and that latest item to add with quantity 1
     return [...cartItems, {...cartItemToAdd, quantity : 1}]
-}
+};
